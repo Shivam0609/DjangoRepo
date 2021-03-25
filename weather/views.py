@@ -6,7 +6,7 @@ from . import forms
 
 
 def index(request):
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=bce656c0013538b220967b7c409f516a'
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid={}'
     err_msg = ''
     message = ''
     message_class = ''
