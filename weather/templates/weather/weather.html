@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,19 +6,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+    <title></title>
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+    <!-- Bootstrap 4 or 5 Stylesheet -->
+  <!-- Toast messages -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.6.0/materia/bootstrap.min.css">
+      <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script> -->
+
+    <style media="screen">
+      .hero-body{
+        rgb(148 146 193);
+        padding: 1rem 1.5rem;
+          /* border-radius: 0 0 20px 20px; */
+        }
+        #header{
+          /* background: rgb(0,90,167); */
+          background-color: #9a96d4;
+        }
+
+        .hero.is-primary .title {
+            color:#363636;
+        }
+      .section {
+        height: 100%;
+        padding: 1rem 1.5rem;
+        }
+      .footer {
+        padding: 1em 1em;
+        /* border-radius: 20px 20px 0 0; */
+        background-color: #58bfc5;
+        position : fixed;
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        background-color: #67dedd;
+        }
+      #msg{
+        color: white;
+      }
+      body {
+        /* background-color:#76D7C4 ; */
+        /* background-image: url("{% static 'images/gradient.jpg' %}") */
+        overflow-y: hidden;
+        height: auto;
+        background-image: linear-gradient(to top, #5ee7df 0%, #b490ca 100%);
+      }
+      .box {
+          border-radius: 25px;
+          height : auto;
+          margin-bottom: 1.5rem;
+      }
+      .button, .input {
+        border-radius: 50px;
+        border-bottom: none;
+      }
+      .notification {
+        border-radius: 50px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+      .subtitle-sm {
+      color: #4a4a4a;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1;
+      }
+      .subtitle-xsm {
+      color: #4a4a4a;
+      font-size: 0.5rem;
+      font-weight: 400;
+      line-height: 0.5;
+      }
+      #db {
+        align-items: center;
+      }
+    </style>
 </head>
 
 <body>
-    <section class="hero is-primary">
+
+    <section id="header" class="hero is-primary">
         <div class="hero-body">
-            <div class="container">
-                <h1 class="title">
-                    What's the weather like?<span class='subtitle' style=float:right><a href="admin">Admin Page</a></span>
-                </h1>
+        <div class="container">
+            <h3 class="title">
+            <img src="https://img.icons8.com/doodle/80/000000/moon-and-sun.png"/>What's the weather like?<span class='subtitle' style=float:right>
+                <!-- <a href="admin">Admin Page</a> -->
+              </span>
+            </h3>
         </div>
     </section>
+
     <section class="section">
         <div class="container">
             <div class="columns">
@@ -25,30 +105,34 @@
                     <form method="POST">
                         <div class="field has-addons">
                             <div class="control is-expanded">
-                                <!-- <input class="input" type="text" placeholder="City Name"> -->
                                 {{ form.name }}
                                 {% csrf_token %}
                             </div>
                             <div class="control">
                                 <button type="submit" class="button is-info">
-                                    Add City
+                              <img src="https://img.icons8.com/doodle/28/000000/add.png"/>
                                 </button>
                             </div>
                         </div>
-                        {% if message %}
-                           <div class="notification {{ message_class }}">{{ message }}</div>
-                        {% endif %}
+                        {% for message in messages %}
+                           <div id="msg" role="alert" class="notification {{ message.tags }}"><span>{{ message }}</span></div>
+                        {% endfor %}
                     </form>
                 </div>
             </div>
         </div>
     </section>
-    <section class="section">
-        <div class="container">
-            <div class="columns">
+    <section class="section" style="min-height:60vh;">
+        <!-- <div class="container"> -->
+            <div class="columns mb-5">
                 <div class="column is-offset-4 is-4">
+              {%if weather%}
                   {% for wd in weather%}
-                    <div class="box">
+                  {%comment%}
+                    <p>Icon :{{wd.icon}}.png</p>
+                    <p>Id :{{wd.weather_id}}</p>
+                  {%endcomment%}
+                    <div class="box" id="image" style="background-image: url({% static 'images/'%}{{wd.icon}}.jpg)">
                         <article class="media">
                             <div class="media-left">
                                 <figure class="image is-50x50">
@@ -58,10 +142,15 @@
                             <div class="media-content">
                                 <div class="content">
                                     <p>
-                                        <span class="title">{{wd.city}}</span>
+                                        <span class="title">{{wd.city | title}}</span>
                                         <br>
-                                        <span class="subtitle">{{wd.temperature}}° C</span>
-                                        <br> {{wd.description}}
+                                        <span class="subtitle">{{wd.temperature}}°C<br>
+                                          <img src="https://img.icons8.com/plasticine/15/000000/long-arrow-up.png"/><span class="subtitle-sm">{{wd.temp_max}}°C</span>
+                                          <img src="https://img.icons8.com/plasticine/15/000000/long-arrow-down.png"/><span class="subtitle-sm">{{wd.temp_min}}°C</span>
+                                        </span>
+                                        <br>{{wd.description}}
+                                        <br> <img src="https://img.icons8.com/cotton/24/000000/sunrise--v1.png"/> {{wd.sunrise}}
+                                        <br> <img src="https://img.icons8.com/cotton/24/000000/sunset--v2.png"/> {{wd.sunset}}
 
                                     </p>
                                 </div>
@@ -74,13 +163,38 @@
                         </article>
                     </div>
                     {% endfor %}
+                  {%else%}
+                  <span id="db" class="column is-offset-1"><img src="https://img.icons8.com/dusk/250/000000/add-column.png" title="Search to see results"/></span>
+                  {%endif%}
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </section>
-    <footer class="footer">
-      <span style=text-align:center><pre>Designed and developed by Shivam Yadav</pre></span>
+    <footer class="footer" style="text-align:center">
+      <p>Made with
+        <img src="https://img.icons8.com/material/24/fa314a/like--v3.png"/>
+      </p>
+      <span  class="inline">
+        <a href="#"><img src="https://img.icons8.com/color/30/000000/github.png"/></a>
+        <a href="#"><img src="https://img.icons8.com/doodle/24/000000/facebook-new.png"/></a>
+        <a href="#"><img src="https://img.icons8.com/plasticine/24/000000/instagram-new--v2.png"/></a>
+      </span>
     </footer>
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"
+        integrity="sha512-XKa9Hemdy1Ui3KSGgJdgMyYlUg1gM+QhL6cnlyTe2qzMCYm4nAZ1PsVerQzTTXzonUR+dmswHqgJPuwCq1MaAg=="
+        crossorigin="anonymous"></script> -->
+    <script type="text/javascript">
+      setTimeout(function(){
+        if ($('#msg').length >0){
+          $('#msg').remove();
+        }
+      },3000)
+    </script>
+
 </body>
 
 </html>
